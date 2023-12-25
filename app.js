@@ -2,10 +2,10 @@ const row = document.querySelector('.row')
 const sepet_body = document.querySelector(".offcanvas-body")
 const sepet = []
 const input = document.getElementById('input')
+const list = document.getElementById('liste')
 
 
 
-get_item_from_locale_storage()
 
 fetch("https://fakestoreapi.com/products?limit=20")
 .then(res => res.json())
@@ -71,8 +71,6 @@ fetch("https://fakestoreapi.com/products?limit=20")
       })
       console.log(sepet.length)
       console.log(sepet)
-      set_item_to_locale_storage(sepet)
-
 
       sepet.forEach(item => {
         const wrapper = document.createElement('div')
@@ -84,6 +82,7 @@ fetch("https://fakestoreapi.com/products?limit=20")
 
             <div class="sepet-img">
               <img src="${item.image}" class="w-100"/>
+
             </div>
           </div>
         `
@@ -97,53 +96,30 @@ fetch("https://fakestoreapi.com/products?limit=20")
   }
 
 
-  console.log(data)
   input.addEventListener('input', () => {
-    const card = document.querySelectorAll('.card')
-    const value = input.value
-    console.log(value)
+    const card = document.querySelectorAll('.card');
+    const value = input.value.toLowerCase(); 
+    console.log(value);
 
     card.forEach(item => {
-      const titles = item.childNodes[0].textContent
-      const descs = item.childNodes[1].textContent
-      if (titles.includes(value) || descs.includes(value) ){
-        item.classList.add('d-block')
-      }else{
-        item.classList.add('d-none')
-      }
-    })
-  })
+        const titles = item.childNodes[0].textContent.toLowerCase();
+        const descs = item.childNodes[1].textContent.toLowerCase(); 
+
+        if (titles.includes(value) || descs.includes(value)) {
+            item.classList.remove('d-none');
+            item.classList.add('d-block');
+        } else {
+            item.classList.remove('d-block');
+            item.classList.add('d-none');
+        }
+    });
+});
+
 
 
 })
 
 
 
-function get_item_from_locale_storage(){
-  const products = JSON.parse(localStorage.getItem('products'))
-  console.log(products)
-  products.forEach(item =>{
-    const wrapper = document.createElement('div')
-    wrapper.innerHTML = wrapper.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h5>${item.title}</h5>
-          <h5>$${item.price}</h5>
-        </div>
-
-        <div class="sepet-img">
-          <img src="${item.image}" class="w-100"/>
-        </div>
-      </div>
-  `
-    sepet_body.appendChild(wrapper)
-  })
-
-}
 
 
-console.log(sepet_body.firstElementChild)
-
-function set_item_to_locale_storage(urunler){
-  localStorage.setItem('products',JSON.stringify(urunler))
-}
